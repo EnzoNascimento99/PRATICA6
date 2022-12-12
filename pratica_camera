@@ -1,0 +1,43 @@
+from requests import get
+import json
+from pprint import pprint
+from picamera import PiCamera, Color
+import time
+
+temp = 'https://apex.oracle.com/pls/apex/raspberrypi/weatherstation/getlatestmeasurements/'
+
+station = 966583 # ufsc
+
+temp = temp + str(station)
+
+temp_real = get(temp).json()['items']
+
+camera = PiCamera() 
+camera.rotation = 180 # rotate 
+camera.framerate = 15 #adjust framerate
+
+camera.start_preview(alpha = 250) # alpha test
+
+camera.brightness = 70
+camera.image_effect = 'saturation' #####
+
+# USP ID
+camera.annotate_text = "10748239"
+camera.annotate_text_size = 100
+
+time.sleep(5)
+
+camera.stop_preview()
+
+camera.capture("/home/sel/pratica6_foto.jpg") 
+
+# record
+camera.start_recording("/home/sel/pratica6_video.h264") 
+
+time.sleep(5)
+
+camera.stop_recording()
+
+time.sleep(5)
+
+print(temp_real)
